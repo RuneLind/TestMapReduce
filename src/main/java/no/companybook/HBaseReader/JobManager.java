@@ -15,13 +15,13 @@ import java.io.IOException;
 public class JobManager
 {
     static String hbaseClientConnectionPort = "6000";
-    //public static String hbaseMasterNode = "ip-10-235-5-65.eu-west-1.compute.internal"; // "192.168.0.194"; //"ip-10-235-5-65.eu-west-1.compute.internal"; // "192.168.0.194"; // "ip-10-235-5-65.eu-west-1.compute.internal"; //"172.27.27.234"; // "ip-10-235-5-65.eu-west-1.compute.internal"; //"192.168.0.194:6000"; //
-    public static String hbaseMasterNode = "192.168.0.175"; // "192.168.0.194"; //"ip-10-235-5-65.eu-west-1.compute.internal"; // "192.168.0.194"; // "ip-10-235-5-65.eu-west-1.compute.internal"; //"172.27.27.234"; // "ip-10-235-5-65.eu-west-1.compute.internal"; //"192.168.0.194:6000"; //
+    public static String hbaseMasterNode = "ip-10-235-5-65.eu-west-1.compute.internal"; // "192.168.0.194"; //"ip-10-235-5-65.eu-west-1.compute.internal"; // "192.168.0.194"; // "ip-10-235-5-65.eu-west-1.compute.internal"; //"172.27.27.234"; // "ip-10-235-5-65.eu-west-1.compute.internal"; //"192.168.0.194:6000"; //
+    //public static String hbaseMasterNode = "172.27.27.233"; // "192.168.0.194"; //"ip-10-235-5-65.eu-west-1.compute.internal"; // "192.168.0.194"; // "ip-10-235-5-65.eu-west-1.compute.internal"; //"172.27.27.234"; // "ip-10-235-5-65.eu-west-1.compute.internal"; //"192.168.0.194:6000"; //
     static String zooKeeperQuorum = hbaseMasterNode;
     public static Configuration configuration = null;
 
 
-    static final String NEWS_TABLE_NAME = "companybook.tables.news";
+    //static final String NEWS_TABLE_NAME = "companybook.tables.news";
 
     //    public JobManager(){
     static
@@ -31,8 +31,8 @@ public class JobManager
         configuration.set("hbase.master", hbaseMasterNode + ":" + hbaseClientConnectionPort);
         configuration.set("hbase.zookeeper.quorum", zooKeeperQuorum);
         configuration.set("hbase.zookeeper.property.clientPort", "2181");
-        configuration.set(" hbase.mapreduce.scan.cachedrows", "1000");
-        configuration.set(NEWS_TABLE_NAME, "news");
+        configuration.set(" hbase.mapreduce.scan.cachedrows", "500");
+        //configuration.set(NEWS_TABLE_NAME, "news");
     }
 
     public void runJob(Job job) throws ClassNotFoundException, IOException, InterruptedException {
@@ -72,7 +72,7 @@ public class JobManager
         Scan scan = NewsMapper.createScanner();
         scan.setBatch(100);
         scan.setCacheBlocks(true);
-        scan.setCaching(1000);
+        scan.setCaching(400);
 //        scan.setStartRow(Bytes.toBytes("NO0000000989175378"));
 //        scan.setStopRow(Bytes.toBytes ("NO0000000989175379"));
 
