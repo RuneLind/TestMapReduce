@@ -4,8 +4,12 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
+import org.apache.hadoop.hbase.mapreduce.IdentityTableReducer;
 import org.apache.hadoop.hbase.mapreduce.TableMapReduceUtil;
+import org.apache.hadoop.hbase.mapreduce.TableReducer;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
@@ -64,24 +68,32 @@ public class JobManager
         job.setOutputFormatClass(TextOutputFormat.class);
 
         job.setMapperClass(NewsMapper.class);
-        job.setReducerClass(NewsReducer.class);
-        job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(Text.class);
+        //job.setReducerClass(NewsReducer.class);
+        job.setReducerClass(IdentityTableReducer.class);
+        job.setOutputKeyClass(ImmutableBytesWritable.class);
+        job.setOutputValueClass(Put.class);
 
         job.setNumReduceTasks(12);
         Scan scan = NewsMapper.createScanner();
         scan.setBatch(100);
         scan.setCacheBlocks(true);
         scan.setCaching(400);
+
 //        scan.setStartRow(Bytes.toBytes("NO0000000989175378"));
 //        scan.setStopRow(Bytes.toBytes ("NO0000000989175379"));
+
+        TableMapReduceUtil.initTableReducerJob(
+            "news_production",
+            IdentityTableReducer.class,
+            job
+        );
 
         TableMapReduceUtil.initTableMapperJob(
                 "news",
                 scan,
                 NewsMapper.class,
-                Text.class,
-                Text.class,
+                ImmutableBytesWritable.class,
+                Put.class,
                 job);
 
         return job;
