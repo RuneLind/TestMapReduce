@@ -1,0 +1,5 @@
+.idea/
+INSTALL_MANUAL_DEPS.sh
+TestMapReduce.iml
+news/*
+target/*
