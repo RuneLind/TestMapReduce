@@ -19,8 +19,8 @@ import java.io.IOException;
 public class JobManager
 {
     static String hbaseClientConnectionPort = "6000";
-    public static String hbaseMasterNode = "ip-10-235-5-65.eu-west-1.compute.internal"; // "192.168.0.194"; //"ip-10-235-5-65.eu-west-1.compute.internal"; // "192.168.0.194"; // "ip-10-235-5-65.eu-west-1.compute.internal"; //"172.27.27.234"; // "ip-10-235-5-65.eu-west-1.compute.internal"; //"192.168.0.194:6000"; //
-    //public static String hbaseMasterNode = "172.27.27.233"; // "192.168.0.194"; //"ip-10-235-5-65.eu-west-1.compute.internal"; // "192.168.0.194"; // "ip-10-235-5-65.eu-west-1.compute.internal"; //"172.27.27.234"; // "ip-10-235-5-65.eu-west-1.compute.internal"; //"192.168.0.194:6000"; //
+    //public static String hbaseMasterNode = "ip-10-235-5-65.eu-west-1.compute.internal"; // "192.168.0.194"; //"ip-10-235-5-65.eu-west-1.compute.internal"; // "192.168.0.194"; // "ip-10-235-5-65.eu-west-1.compute.internal"; //"172.27.27.234"; // "ip-10-235-5-65.eu-west-1.compute.internal"; //"192.168.0.194:6000"; //
+    public static String hbaseMasterNode = "172.27.27.220"; // "192.168.0.194"; //"ip-10-235-5-65.eu-west-1.compute.internal"; // "192.168.0.194"; // "ip-10-235-5-65.eu-west-1.compute.internal"; //"172.27.27.234"; // "ip-10-235-5-65.eu-west-1.compute.internal"; //"192.168.0.194:6000"; //
     static String zooKeeperQuorum = hbaseMasterNode;
     public static Configuration configuration = null;
 
@@ -58,45 +58,87 @@ public class JobManager
     }
 
     public static Job readNews() throws IOException
-    {
-        String name = "NewsScan";
-        Job job = new Job(configuration, name);
+       {
+           String name = "NewsScan";
+           Job job = new Job(configuration, name);
 
-        job.setJarByClass(JobManager.class);
+           job.setJarByClass(JobManager.class);
 
-        TextOutputFormat.setOutputPath(job, new Path("news"));
-        job.setOutputFormatClass(TextOutputFormat.class);
+           TextOutputFormat.setOutputPath(job, new Path("news"));
+           job.setOutputFormatClass(TextOutputFormat.class);
 
-        job.setMapperClass(NewsMapper.class);
-        //job.setReducerClass(NewsReducer.class);
-        job.setReducerClass(IdentityTableReducer.class);
-        job.setOutputKeyClass(ImmutableBytesWritable.class);
-        job.setOutputValueClass(Put.class);
+           job.setMapperClass(NewsMapper.class);
+           job.setReducerClass(NewsReducer.class);
+           job.setOutputKeyClass(Text.class);
+           job.setOutputValueClass(Text.class);
 
-        job.setNumReduceTasks(12);
-        Scan scan = NewsMapper.createScanner();
-        scan.setBatch(100);
-        scan.setCacheBlocks(true);
-        scan.setCaching(400);
+           job.setNumReduceTasks(12);
+           Scan scan = NewsMapper.createScanner();
+           scan.setBatch(100);
+           scan.setCacheBlocks(true);
+           scan.setCaching(400);
 
-//        scan.setStartRow(Bytes.toBytes("NO0000000989175378"));
-//        scan.setStopRow(Bytes.toBytes ("NO0000000989175379"));
+           TableMapReduceUtil.initTableMapperJob(
+                   "news",
+                   scan,
+                   NewsMapper.class,
+                   Text.class,
+                   Text.class,
+                   job);
 
-        TableMapReduceUtil.initTableReducerJob(
-            "news_production",
-            IdentityTableReducer.class,
-            job
-        );
+           return job;
+       }
 
-        TableMapReduceUtil.initTableMapperJob(
-                "news",
-                scan,
-                NewsMapper.class,
-                ImmutableBytesWritable.class,
-                Put.class,
-                job);
 
-        return job;
-    }
+//    public static Job readNews() throws IOException
+//    {
+//        String name = "NewsScan";
+//        Job job = new Job(configuration, name);
+//
+//        job.setJarByClass(JobManager.class);
+//
+//        TextOutputFormat.setOutputPath(job, new Path("news"));
+//        job.setOutputFormatClass(TextOutputFormat.class);
+//
+//        job.setMapperClass(NewsMapper.class);
+//        //job.setReducerClass(NewsReducer.class);
+//        job.setReducerClass(IdentityTableReducer.class);
+//        job.setOutputKeyClass(ImmutableBytesWritable.class);
+//        job.setOutputValueClass(Put.class);
+//
+//        job.setNumReduceTasks(12);
+//        Scan scan = NewsMapper.createScanner();
+//        scan.setBatch(100);
+//        scan.setCacheBlocks(true);
+//        scan.setCaching(400);
+//
+////        scan.setStartRow(Bytes.toBytes("NO0000000989175378"));
+////        scan.setStopRow(Bytes.toBytes ("NO0000000989175379"));
+//
+//        TableMapReduceUtil.initTableReducerJob(
+//            //"news_production",
+//            "news",
+//            IdentityTableReducer.class,
+//            job
+//        );
+//
+//        TableMapReduceUtil.initTableMapperJob(
+//                        "news",
+//                        scan,
+//                        NewsMapper.class,
+//                        Text.class,
+//                        Text.class,
+//                        job);
+//
+//        TableMapReduceUtil.initTableMapperJob(
+//                "news",
+//                scan,
+//                NewsMapper.class,
+//                ImmutableBytesWritable.class,
+//                Put.class,
+//                job);
+//
+//        return job;
+//    }
 }
 
