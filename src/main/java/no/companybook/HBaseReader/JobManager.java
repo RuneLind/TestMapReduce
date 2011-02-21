@@ -19,8 +19,8 @@ import java.io.IOException;
 public class JobManager
 {
     static String hbaseClientConnectionPort = "6000";
-    //public static String hbaseMasterNode = "ip-10-235-5-65.eu-west-1.compute.internal"; // "192.168.0.194"; //"ip-10-235-5-65.eu-west-1.compute.internal"; // "192.168.0.194"; // "ip-10-235-5-65.eu-west-1.compute.internal"; //"172.27.27.234"; // "ip-10-235-5-65.eu-west-1.compute.internal"; //"192.168.0.194:6000"; //
-    public static String hbaseMasterNode = "172.27.27.220"; // "192.168.0.194"; //"ip-10-235-5-65.eu-west-1.compute.internal"; // "192.168.0.194"; // "ip-10-235-5-65.eu-west-1.compute.internal"; //"172.27.27.234"; // "ip-10-235-5-65.eu-west-1.compute.internal"; //"192.168.0.194:6000"; //
+    public static String hbaseMasterNode = "ip-10-235-5-65.eu-west-1.compute.internal"; // "192.168.0.194"; //"ip-10-235-5-65.eu-west-1.compute.internal"; // "192.168.0.194"; // "ip-10-235-5-65.eu-west-1.compute.internal"; //"172.27.27.234"; // "ip-10-235-5-65.eu-west-1.compute.internal"; //"192.168.0.194:6000"; //
+    //public static String hbaseMasterNode = "172.27.27.220"; // "192.168.0.194"; //"ip-10-235-5-65.eu-west-1.compute.internal"; // "192.168.0.194"; // "ip-10-235-5-65.eu-west-1.compute.internal"; //"172.27.27.234"; // "ip-10-235-5-65.eu-west-1.compute.internal"; //"192.168.0.194:6000"; //
     static String zooKeeperQuorum = hbaseMasterNode;
     public static Configuration configuration = null;
 
@@ -64,7 +64,7 @@ public class JobManager
 
            job.setJarByClass(JobManager.class);
 
-           TextOutputFormat.setOutputPath(job, new Path("news"));
+           TextOutputFormat.setOutputPath(job, new Path("news_norway"));
            job.setOutputFormatClass(TextOutputFormat.class);
 
            job.setMapperClass(NewsMapper.class);
