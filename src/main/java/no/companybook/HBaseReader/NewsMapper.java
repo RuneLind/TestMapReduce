@@ -65,6 +65,7 @@ public class NewsMapper extends TableMapper<Text, Text> {
     public final static Text ARTICLE_ID = new Text("article_id");
     public final static Text CONTENT = new Text("content");
     public final static Text COUNTRY = new Text("location_country");
+    public final static Text LANGUAGE = new Text("language");
 
     public final static Text INFO = new Text("info");
 
@@ -72,7 +73,8 @@ public class NewsMapper extends TableMapper<Text, Text> {
         Scan scan = new Scan();
         scan.addColumn(Util.toBytes(INFO), Util.toBytes(TITLE));
         scan.addColumn(Util.toBytes(INFO), Util.toBytes(CONTENT));
-         scan.addColumn(Util.toBytes(INFO), Util.toBytes(COUNTRY));
+        scan.addColumn(Util.toBytes(INFO), Util.toBytes(COUNTRY));
+        scan.addColumn(Util.toBytes(INFO), Util.toBytes(LANGUAGE));
         return  scan;
     }
 
@@ -84,13 +86,15 @@ public class NewsMapper extends TableMapper<Text, Text> {
                 value.getRow(),
                 value.getValue(Util.toBytes(INFO), Util.toBytes(TITLE)),
                 value.getValue(Util.toBytes(INFO), Util.toBytes(COUNTRY)),
+                value.getValue(Util.toBytes(INFO), Util.toBytes(LANGUAGE)),
                 value.getValue(Util.toBytes(INFO), Util.toBytes(CONTENT)));
 
         if (output.size() == 0) return;
 
         Text content = (Text) output.get(CONTENT);
-        Text country = (Text) output.get(COUNTRY);
-        if(country.toString().indexOf("NORWAY")==-1) return;
+        //Text country = (Text) output.get(COUNTRY);
+        Text language = (Text) output.get(LANGUAGE);
+        if(language.toString().indexOf("Norwegian")==-1) return;
 
         Text outputKey = (Text) output.get(ARTICLE_ID);
         Text title = (Text) output.get(TITLE);
@@ -105,6 +109,7 @@ public class NewsMapper extends TableMapper<Text, Text> {
             byte[] rowIdAsBytes,
             byte[] titleAsBytes,
             byte[] countryAsBytes,
+            byte[] languageAsBytes,
             byte[] contentAsBytes
     ) {
 
@@ -118,12 +123,14 @@ public class NewsMapper extends TableMapper<Text, Text> {
             Text article_id = new Text(Bytes.toString(rowIdAsBytes));
             Text title = new Text(Bytes.toString(titleAsBytes));
             Text country = new Text(Bytes.toString(countryAsBytes));
+            Text language = new Text(Bytes.toString(languageAsBytes));
             Text content = new Text(Bytes.toString(contentAsBytes));
 
 
             output.put(TITLE, title);
             output.put(ARTICLE_ID, article_id);
             output.put(COUNTRY, country);
+            output.put(LANGUAGE, language);
             output.put(CONTENT, content);
         }
         return output;

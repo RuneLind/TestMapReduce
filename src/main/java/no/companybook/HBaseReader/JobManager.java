@@ -1,5 +1,6 @@
 package no.companybook.HBaseReader;
 
+import com.sun.org.apache.bcel.internal.generic.IMUL;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -12,6 +13,8 @@ import org.apache.hadoop.hbase.mapreduce.TableMapReduceUtil;
 import org.apache.hadoop.hbase.mapreduce.TableReducer;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 import java.io.IOException;
@@ -54,17 +57,52 @@ public class JobManager
         JobManager mrBuilder = new JobManager();
 
         System.out.println("running news scan");
-        mrBuilder.runJob(readNews());
+        mrBuilder.runJob(readNorwegianNews());
+        //mrBuilder.runJob(readEntities());
     }
 
-    public static Job readNews() throws IOException
+    public static Job readEntities() throws IOException
        {
-           String name = "NewsScan";
+           String name = "EntitiesScan";
            Job job = new Job(configuration, name);
 
            job.setJarByClass(JobManager.class);
 
-           TextOutputFormat.setOutputPath(job, new Path("news_norway"));
+           TextOutputFormat.setOutputPath(job, new Path("empty_"));
+           job.setOutputFormatClass(TextOutputFormat.class);
+
+           job.setInputFormatClass(TextInputFormat.class);
+           TextInputFormat.setInputPaths(job,"/Users/Rune/Source/TestMapReduce/entities");
+
+           job.setMapperClass(EntityMapper.class);
+//           job.setReducerClass(IdentityTableReducer.class);
+           job.setReducerClass(Reducer.class);
+
+           job.setOutputKeyClass(ImmutableBytesWritable.class);
+           job.setOutputValueClass(Put.class);
+
+//           TableMapReduceUtil.initTableReducerJob(
+//                   "news",
+//                   IdentityTableReducer.class,
+//                   job);
+
+           job.setNumReduceTasks(12);
+//           Scan scan = NewsMapper.createScanner();
+//           scan.setBatch(100);
+//           scan.setCacheBlocks(true);
+//           scan.setCaching(400);
+
+           return job;
+       }
+
+    public static Job readNorwegianNews() throws IOException
+       {
+           String name = "Filter norwegian news";
+           Job job = new Job(configuration, name);
+
+           job.setJarByClass(JobManager.class);
+
+           TextOutputFormat.setOutputPath(job, new Path("news_norwegian"));
            job.setOutputFormatClass(TextOutputFormat.class);
 
            job.setMapperClass(NewsMapper.class);
@@ -90,7 +128,7 @@ public class JobManager
        }
 
 
-//    public static Job readNews() throws IOException
+//    public static Job readNorwegianNews() throws IOException
 //    {
 //        String name = "NewsScan";
 //        Job job = new Job(configuration, name);
