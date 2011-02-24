@@ -61,39 +61,39 @@ public class JobManager
         //mrBuilder.runJob(readEntities());
     }
 
-    public static Job readEntities() throws IOException
-       {
-           String name = "EntitiesScan";
-           Job job = new Job(configuration, name);
-
-           job.setJarByClass(JobManager.class);
-
-           TextOutputFormat.setOutputPath(job, new Path("empty_"));
-           job.setOutputFormatClass(TextOutputFormat.class);
-
-           job.setInputFormatClass(TextInputFormat.class);
-           TextInputFormat.setInputPaths(job,"/Users/Rune/Source/TestMapReduce/entities");
-
-           job.setMapperClass(EntityMapper.class);
-//           job.setReducerClass(IdentityTableReducer.class);
-           job.setReducerClass(Reducer.class);
-
-           job.setOutputKeyClass(ImmutableBytesWritable.class);
-           job.setOutputValueClass(Put.class);
-
-//           TableMapReduceUtil.initTableReducerJob(
-//                   "news",
-//                   IdentityTableReducer.class,
-//                   job);
-
-           job.setNumReduceTasks(12);
-//           Scan scan = NewsMapper.createScanner();
-//           scan.setBatch(100);
-//           scan.setCacheBlocks(true);
-//           scan.setCaching(400);
-
-           return job;
-       }
+//    public static Job readEntities() throws IOException
+//       {
+//           String name = "EntitiesScan";
+//           Job job = new Job(configuration, name);
+//
+//           job.setJarByClass(JobManager.class);
+//
+//           TextOutputFormat.setOutputPath(job, new Path("empty_"));
+//           job.setOutputFormatClass(TextOutputFormat.class);
+//
+//           job.setInputFormatClass(TextInputFormat.class);
+//           TextInputFormat.setInputPaths(job,"/Users/Rune/Source/TestMapReduce/entities");
+//
+//           job.setMapperClass(EntityMapper.class);
+////           job.setReducerClass(IdentityTableReducer.class);
+//           job.setReducerClass(Reducer.class);
+//
+//           job.setOutputKeyClass(ImmutableBytesWritable.class);
+//           job.setOutputValueClass(Put.class);
+//
+////           TableMapReduceUtil.initTableReducerJob(
+////                   "news",
+////                   IdentityTableReducer.class,
+////                   job);
+//
+//           job.setNumReduceTasks(12);
+////           Scan scan = NewsMapper.createScanner();
+////           scan.setBatch(100);
+////           scan.setCacheBlocks(true);
+////           scan.setCaching(400);
+//
+//           return job;
+//       }
 
     public static Job readNorwegianNews() throws IOException
        {
