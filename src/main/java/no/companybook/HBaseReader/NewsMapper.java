@@ -10,6 +10,7 @@ import org.apache.hadoop.io.MapWritable;
 import org.apache.hadoop.io.Text;
 
 import java.io.IOException;
+import java.util.regex.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -99,9 +100,8 @@ public class NewsMapper extends TableMapper<Text, Text> {
         Text outputKey = (Text) output.get(ARTICLE_ID);
         Text title = (Text) output.get(TITLE);
 
-        //String result = String.format("%s-%s", content, title);
         String result = String.format("%s %s", title, content);
-        //context.write(outputKey, new Text(result));
+        result = result.replace('\n', '\t');
         context.write(outputKey, new Text(result));
     }
 
