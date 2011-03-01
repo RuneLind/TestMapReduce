@@ -101,7 +101,8 @@ public class NewsMapper extends TableMapper<Text, Text> {
         Text title = (Text) output.get(TITLE);
 
         String result = String.format("%s %s", title, content);
-        result = result.replace('\n', '\t');
+        result = result.replace('\n', ' ');
+        result = result.replace('\t', ' ');
         context.write(outputKey, new Text(result));
     }
 

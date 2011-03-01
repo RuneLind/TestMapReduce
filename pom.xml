@@ -27,6 +27,21 @@
     <name>TestMapReduce</name>
     <url>http://maven.apache.org</url>
 
+  <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.codehaus.groovy.maven</groupId>
+                <artifactId>gmaven-mojo</artifactId>
+                <version>1.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.groovy.maven.runtime</groupId>
+                <artifactId>gmaven-runtime-1.6</artifactId>
+                <version>1.0</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>log4j</groupId>
@@ -96,6 +111,11 @@
             <scope>compile</scope>
         </dependency>
 
+      <dependency>
+            <groupId>org.codehaus.groovy.maven.runtime</groupId>
+            <artifactId>gmaven-runtime-1.6</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -152,6 +172,22 @@
 
                         </configuration>
 
+                    </execution>
+                </executions>
+            </plugin>
+
+         <plugin>
+                <groupId>org.codehaus.groovy.maven</groupId>
+                <version>1.0</version>
+                <artifactId>gmaven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generateStubs</goal>
+                            <goal>compile</goal>
+                            <goal>generateTestStubs</goal>
+                            <goal>testCompile</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
